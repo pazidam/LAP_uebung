@@ -1,10 +1,19 @@
 <?php
+require_once 'autoloader.php';
+
+use classes\DB;
+
 if(isset($_POST['search']) && !empty($_POST['search_val']))
 {
     printProduct();
 
-    print_result($_POST['search_val']);
+    $search_Term = "%".$_POST['search_val']."%";
 
+    $conn = new DB();
+    $conn->selectLikeProduction($search_Term);
+
+    print_result($_POST['search_val'], $conn->company, $conn->rowCount);
+    $conn->printContent();
 }
 else
 {
@@ -51,7 +60,7 @@ function printProduct()
     <?php
 }
 
-function print_result($search_val)
+function print_result($search_val, $company, $count)
 {
     ?>
     <div class="container pt-4">
@@ -73,7 +82,7 @@ function print_result($search_val)
                         <h5>Gefundene Produktionsfirma:</h5>
                     </div>
                     <div class="col">
-                        <h5><b><?= $search_val ?></b></h5>
+                        <h5><b><?= $company ?></b></h5>
                     </div>
                 </div>
                 <div class="row pt-5">
@@ -81,7 +90,7 @@ function print_result($search_val)
                         <h5>Anzahl gefundener Filmtitel:</h5>
                     </div>
                     <div class="col">
-                        <h5><b><?= $search_val ?></b></h5>
+                        <h5><b><?= $count ?></b></h5>
                     </div>
                 </div>
 
